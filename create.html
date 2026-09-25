@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fef9ed" />
+  <title>Create the Surprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=8" />
+</head>
+<body>
+  <main class="screen screen--scroll create" id="create">
+    <form class="create__form" id="createForm" novalidate>
+
+      <!-- 01 Who's celebrating -->
+      <div class="field">
+        <img class="field__art" src="Images/creatorCelebrationName.png" alt="" />
+        <input
+          class="field__input field__input--name"
+          id="nameInput"
+          type="text"
+          maxlength="30"
+          autocomplete="off"
+          placeholder="Their name…"
+          aria-label="Who's celebrating?"
+        />
+      </div>
+
+      <!-- 02 Write your message -->
+      <div class="field">
+        <img class="field__art" src="Images/creatorWriteMessage.png" alt="" />
+        <textarea
+          class="field__input field__input--message"
+          id="messageInput"
+          maxlength="500"
+          placeholder="Write something sweet…"
+          aria-label="Write your message"
+        ></textarea>
+      </div>
+
+      <!-- 03 Add their photo -->
+      <div class="field">
+        <img class="field__art" src="Images/creatorAddTheirPhoto.png" alt="" />
+        <label class="field__upload field__upload--main" aria-label="Upload their photo">
+          <input type="file" accept="image/*" data-slot="main" hidden />
+          <img class="field__preview" alt="" />
+        </label>
+      </div>
+
+      <!-- 04 Add some memories -->
+      <div class="field">
+        <img class="field__art" src="Images/creatorAddmemories.png" alt="" />
+        <label class="field__upload field__upload--m1" aria-label="Upload memory photo 1">
+          <input type="file" accept="image/*" data-slot="m1" hidden />
+          <img class="field__preview" alt="" />
+        </label>
+        <label class="field__upload field__upload--m2" aria-label="Upload memory photo 2">
+          <input type="file" accept="image/*" data-slot="m2" hidden />
+          <img class="field__preview" alt="" />
+        </label>
+        <label class="field__upload field__upload--m3" aria-label="Upload memory photo 3">
+          <input type="file" accept="image/*" data-slot="m3" hidden />
+          <img class="field__preview" alt="" />
+        </label>
+      </div>
+
+      <!-- Create button -->
+      <button class="create__submit" type="submit" aria-label="Create their birthday card">
+        <img src="Images/creatorCreatorCardBtn.png" alt="" />
+      </button>
+    </form>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script type="module" src="js/create.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,908 @@
+/* ---------- Base ---------- */
+:root {
+  --cream: #f7e4dc;
+  --pink: #ff4f8b;
+  --pink-soft: #ffb3cb;
+  --app-max-width: 480px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: #2b1d22; /* only visible on desktop, around the phone frame */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+/* Every page is a phone-sized screen, centered on larger displays */
+.screen {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-max-width);
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: var(--cream);
+}
+
+@media (min-width: 481px) {
+  .screen {
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ---------- Landing ---------- */
+.landing {
+  background-image: url("../Images/creatorbackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.landing__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 3vh, 32px);
+  padding: 0 7%;
+  padding-bottom: 6vh; /* lift content slightly above the ribbon at the bottom */
+}
+
+.landing__title {
+  width: 92%;
+  max-width: 400px;
+  height: auto;
+  opacity: 0;
+  animation:
+    popIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards,
+    float 4s ease-in-out 1.2s infinite;
+  filter: drop-shadow(0 8px 14px rgba(214, 70, 120, 0.18));
+}
+
+.landing__button {
+  width: 88%;
+  max-width: 380px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  animation:
+    slideUp 0.8s ease-out 0.9s forwards,
+    pulse 2.2s ease-in-out 1.8s infinite;
+  transition: transform 0.15s ease;
+}
+
+.landing__button img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 12px rgba(214, 70, 120, 0.3));
+  pointer-events: none;
+}
+
+.landing__button:active {
+  transform: scale(0.94);
+}
+
+.landing__button:focus-visible {
+  outline: 3px dashed var(--pink);
+  outline-offset: 6px;
+  border-radius: 40px;
+}
+
+/* Page leaving animation */
+.landing.is-leaving .landing__content {
+  animation: fadeOutUp 0.5s ease-in forwards;
+}
+
+/* ---------- Open (receiver landing) ---------- */
+.open {
+  background-image: url("../Images/creatorbackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.open__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 0 8%;
+}
+
+.open__envelope {
+  width: 72%;
+  max-width: 320px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  animation:
+    popIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards,
+    wiggle 2.6s ease-in-out 1.2s infinite;
+  filter: drop-shadow(0 10px 20px rgba(214, 70, 120, 0.35));
+}
+
+.open__envelope img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.open__envelope:active {
+  transform: scale(0.94);
+}
+
+.open__envelope:focus-visible {
+  outline: 3px dashed var(--pink);
+  outline-offset: 10px;
+  border-radius: 20px;
+}
+
+.open__hint {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 19px;
+  color: var(--pink);
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.7s forwards;
+}
+
+.open.is-leaving .open__content {
+  animation: fadeOutUp 0.5s ease-in forwards;
+}
+
+@keyframes wiggle {
+  0%, 55%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(-8deg); }
+  20% { transform: rotate(7deg); }
+  30% { transform: rotate(-5deg); }
+  40% { transform: rotate(3deg); }
+  50% { transform: rotate(-1deg); }
+}
+
+/* ---------- Create (form) page ---------- */
+.screen--scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.create {
+  background: #fef9ed url("../Images/plainBkg.png") center / cover no-repeat;
+  background-attachment: local;
+}
+
+.create__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: max(48px, env(safe-area-inset-top) + 32px) 2% 24px;
+  min-height: 100%;
+  justify-content: flex-start;
+}
+
+/* Each field = artwork image + real input placed over the empty box.
+   All positions are % of the artwork (2000 x 667 ratio), so they scale. */
+.field {
+  position: relative;
+  width: 76%;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+/* artwork has transparent padding above/below – pull cards closer */
+.field + .field,
+.field + .create__submit {
+  margin-top: -1%;
+}
+
+.field:nth-child(1) { animation-delay: 0.05s; }
+.field:nth-child(2) { animation-delay: 0.15s; }
+.field:nth-child(3) { animation-delay: 0.25s; }
+.field:nth-child(4) { animation-delay: 0.35s; }
+
+.field__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.field__input {
+  position: absolute;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 16px; /* 16px+ stops iOS from zooming on focus */
+  color: #7a3b4d;
+  padding: 0 4%;
+  border-radius: 999px;
+  transition: box-shadow 0.2s ease;
+}
+
+.field__input::placeholder {
+  color: #d58aa0;
+}
+
+.field__input:focus {
+  box-shadow: 0 0 0 2px rgba(255, 79, 139, 0.55);
+}
+
+.field__input--name {
+  left: 11.75%;
+  top: 54.8%;
+  width: 60.2%;
+  height: 20.8%;
+}
+
+.field__input--message {
+  left: 9%;
+  top: 53.8%;
+  width: 62.2%;
+  height: 22.4%;
+  resize: none;
+  scrollbar-width: none;
+  line-height: 1.25;
+  padding: 1.6% 3.5%;
+  border-radius: 14px;
+}
+
+.field__input--message::-webkit-scrollbar {
+  display: none;
+}
+
+.field.is-invalid .field__input,
+.field.is-invalid .field__upload--main {
+  box-shadow: 0 0 0 2px #ff2d6f;
+  animation: shake 0.35s ease;
+}
+
+/* upload boxes */
+.field__upload {
+  position: absolute;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.field__upload:active {
+  transform: scale(0.96);
+}
+
+.field__upload--main { left: 14.7%; top: 49.1%; width: 56%;   height: 39.3%; }
+.field__upload--m1   { left: 15.3%; top: 48.3%; width: 17.7%; height: 40.1%; }
+.field__upload--m2   { left: 34.6%; top: 48.3%; width: 17.3%; height: 40.1%; }
+.field__upload--m3   { left: 53.5%; top: 48.3%; width: 16.2%; height: 40.1%; }
+
+.field__preview {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.field__upload.has-image .field__preview {
+  display: block;
+}
+
+.field__upload.has-image {
+  box-shadow: 0 0 0 2px #ff7aa5, 0 3px 8px rgba(214, 70, 120, 0.3);
+}
+
+.field__upload.is-loading {
+  animation: pulse 0.9s ease-in-out infinite;
+}
+
+/* submit button */
+.create__submit {
+  width: 76%;
+  margin-top: 4%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.45s forwards;
+  transition: transform 0.15s ease;
+}
+
+.create__submit img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.create__submit:active {
+  transform: scale(0.95);
+}
+
+.create__submit:focus-visible {
+  outline: 3px dashed var(--pink);
+  outline-offset: -12%;
+  border-radius: 40px;
+}
+
+/* little message bubble */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 20px);
+  max-width: min(88vw, 420px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #ff4f8b;
+  color: #fff;
+  font-family: "Patrick Hand", cursive;
+  font-size: 17px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(214, 70, 120, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 10;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
+
+/* ---------- Share (link) page ---------- */
+.share {
+  background: #fef9ed url("../Images/plainBkg.png") center / cover no-repeat;
+  background-attachment: local;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6% 6% max(24px, env(safe-area-inset-bottom));
+  gap: 28px;
+}
+
+.linkbox {
+  position: relative;
+  width: 100%;
+}
+
+.linkbox__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.linkbox__input {
+  position: absolute;
+  left: 29%;
+  top: 40%;
+  width: 41%;
+  height: 13%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 13px;
+  color: #7a3b4d;
+  padding: 0 2%;
+}
+
+.linkbox__copy {
+  position: absolute;
+  left: 73%;
+  top: 41%;
+  width: 13%;
+  height: 12%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.linkbox__copy:active {
+  transform: scale(0.94);
+}
+
+.share__again {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  color: #d5567e;
+  font-size: 17px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Falling confetti ---------- */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti__piece {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  animation: fall linear forwards;
+  will-change: transform;
+}
+
+.confetti__piece--circle {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.confetti__piece--strip {
+  width: 4px;
+  height: 16px;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.6) rotate(-4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes slideUp {
+  0%   { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+@keyframes fadeOutUp {
+  to { opacity: 0; transform: translateY(-30px); }
+}
+
+/* --sway and --spin are set per piece from JS */
+@keyframes fall {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0) rotateY(0); }
+  8%   { opacity: 0.95; }
+  25%  { transform: translate(var(--sway), 26vh) rotate(calc(var(--spin) * 0.25)) rotateY(180deg); }
+  50%  { transform: translate(calc(var(--sway) * -1), 52vh) rotate(calc(var(--spin) * 0.5)) rotateY(360deg); }
+  75%  { transform: translate(var(--sway), 78vh) rotate(calc(var(--spin) * 0.75)) rotateY(540deg); }
+  90%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(0, 105vh) rotate(var(--spin)) rotateY(720deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing__title,
+  .landing__button,
+  .field,
+  .create__submit,
+  .open__envelope,
+  .open__hint,
+  .photo__frame,
+  .photo__name,
+  .photo__hint {
+    animation: none;
+    opacity: 1;
+  }
+  .confetti {
+    display: none;
+  }
+}
+
+/* ---------- Photo reveal page ---------- */
+.photo {
+  background: #fef9ed url("../Images/plainBkg.png") center / cover no-repeat;
+  background-attachment: local;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo__state {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+  text-align: center;
+}
+
+.photo__loadingText {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 20px;
+  color: #d5567e;
+}
+
+.photo__reveal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  cursor: pointer;
+}
+
+.photo__frame {
+  position: relative;
+  width: 68%;
+  max-width: 280px;
+  margin-bottom: 150px;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.5s forwards;
+}
+
+.photo__picture {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 5px solid #fff;
+  box-shadow: 0 10px 24px rgba(214, 70, 120, 0.3);
+}
+
+.photo__cap {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  width: 42%;
+  height: auto;
+  transform: translateX(-50%) rotate(-8deg);
+  filter: drop-shadow(0 8px 14px rgba(214, 70, 120, 0.3));
+  pointer-events: none;
+  z-index: 2;
+}
+
+.photo__sticker {
+  position: absolute;
+  left: 50%;
+  top: 66%;
+  width: 92%;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: drop-shadow(0 6px 12px rgba(214, 70, 120, 0.25));
+  z-index: 2;
+}
+
+.photo__name {
+  font-family: "Baloo 2", "Patrick Hand", cursive, sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 8vw, 38px);
+  color: #ff5fa0;
+  -webkit-text-stroke: 1.5px #e6377a;
+  text-shadow:
+    0 -2px 0 rgba(255, 255, 255, 0.55),
+    0 4px 0 #e6377a,
+    0 8px 14px rgba(214, 70, 120, 0.35);
+  opacity: 0;
+  animation: slideUp 0.5s ease-out 0.9s forwards;
+}
+
+.photo__hint {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 17px;
+  color: #d5567e;
+  opacity: 0;
+  animation: slideUp 0.5s ease-out 1.3s forwards;
+}
+
+/* ---------- Collage + message (receiver) page ---------- */
+.collage {
+  background: #fef9ed url("../Images/plainBkg.png") center / cover no-repeat;
+  background-attachment: local;
+}
+
+.collage__state {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+  text-align: center;
+}
+
+.collage__loadingText {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 20px;
+  color: #d5567e;
+}
+
+.collage__reveal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 4% 2% 28px;
+}
+
+.collage__decorRow {
+  position: relative;
+  width: 94%;
+  max-width: 400px;
+  height: 60px;
+  margin-top: 2px;
+}
+
+.decor {
+  position: absolute;
+  pointer-events: none;
+}
+
+.decor svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.decor--candle1 {
+  left: 35%;
+  top: 4px;
+  width: 24px;
+}
+
+.decor--candle2 {
+  left: 58%;
+  top: 8px;
+  width: 20px;
+}
+
+.decor--balloon1 {
+  left: 3%;
+  top: -12px;
+  width: 32px;
+  animation: bob 4.5s ease-in-out infinite;
+}
+
+.decor--balloon2 {
+  left: 87%;
+  top: -8px;
+  width: 28px;
+  animation: bob 5.2s ease-in-out 0.8s infinite;
+}
+
+.decor__flame {
+  transform-origin: 50% 100%;
+  animation: flicker 2.4s ease-in-out infinite;
+}
+
+.decor--candle2 .decor__flame {
+  animation-duration: 2s;
+  animation-delay: 0.4s;
+}
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  25%      { transform: scale(0.94, 1.05) rotate(-3deg); opacity: 0.92; }
+  50%      { transform: scale(1.05, 0.95) rotate(2deg); opacity: 1; }
+  75%      { transform: scale(0.97, 1.03) rotate(-2deg); opacity: 0.95; }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-14px) rotate(2deg); }
+}
+
+.collage__frames {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.1s forwards;
+}
+
+.collage__framesArt {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.collage__photo {
+  position: absolute;
+  z-index: 0;
+  object-fit: cover;
+}
+
+.collage__photo--1 {
+  left: 53%;
+  top: 35%;
+  width: 25%;
+  height: 36.9%;
+  transform: translate(-50%, -50%) rotate(4deg);
+}
+
+.collage__photo--2 {
+  left: 29%;
+  top: 64%;
+  width: 24%;
+  height: 35.4%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+}
+
+.collage__photo--3 {
+  left: 73.5%;
+  top: 59%;
+  width: 23%;
+  height: 34%;
+  transform: translate(-50%, -50%) rotate(6deg);
+}
+
+.collage__note {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin-top: -4%;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.35s forwards;
+}
+
+.collage__noteArt {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.collage__message {
+  position: absolute;
+  left: 8%;
+  top: 34%;
+  width: 85%;
+  height: 44%;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 15px;
+  line-height: 19px;
+  color: #a5677a;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collage__frames,
+  .collage__note {
+    animation: none;
+    opacity: 1;
+  }
+  .decor__flame,
+  .decor--balloon1,
+  .decor--balloon2 {
+    animation: none;
+  }
+}
+
+/* ---------- View (recipient) page ---------- */
+.view {
+  background: #fef9ed url("../Images/plainBkg.png") center / cover no-repeat;
+  background-attachment: local;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.view__state {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+  text-align: center;
+}
+
+.view__loadingText {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 20px;
+  color: #d5567e;
+}
+
+.view__card {
+  width: 100%;
+  padding: 48px 7% max(32px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  opacity: 0;
+  animation: slideUp 0.6s ease-out 0.1s forwards;
+}
+
+.view__heading {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 30px;
+  color: var(--pink);
+  line-height: 1.25;
+}
+
+.view__photo {
+  width: 78%;
+  max-width: 320px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 20px rgba(214, 70, 120, 0.25);
+}
+
+.view__message {
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: 19px;
+  line-height: 1.5;
+  color: #7a3b4d;
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow: 0 6px 16px rgba(214, 70, 120, 0.15);
+  white-space: pre-wrap;
+}
+
+.view__memories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.view__memory {
+  width: calc(33.333% - 7px);
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px rgba(214, 70, 120, 0.2);
+}

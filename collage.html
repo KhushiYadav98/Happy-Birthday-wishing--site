@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fdf6ec" />
+  <title>A Birthday Surprise</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=11" />
+</head>
+<body>
+  <main class="screen screen--scroll collage" id="collage">
+    <div class="collage__state" id="loadingState">
+      <p class="collage__loadingText">Unwrapping your surprise… 🎁</p>
+    </div>
+
+    <div class="collage__state" id="errorState" hidden>
+      <p class="collage__loadingText">Hmm, we couldn't find this surprise 💔</p>
+    </div>
+
+    <div class="collage__reveal" id="reveal" hidden>
+      <div class="collage__frames">
+        <img class="collage__photo collage__photo--1" id="memPhoto1" alt="" />
+        <img class="collage__photo collage__photo--2" id="memPhoto2" alt="" />
+        <img class="collage__photo collage__photo--3" id="memPhoto3" alt="" />
+        <img class="collage__framesArt" src="Images/frames.png" alt="" />
+      </div>
+
+      <div class="collage__note">
+        <img class="collage__noteArt" src="Images/messagecard.png" alt="" />
+        <p class="collage__message" id="cardMessage"></p>
+      </div>
+
+      <div class="collage__decorRow" aria-hidden="true">
+        <div class="decor decor--balloon1">
+          <svg viewBox="0 0 40 60">
+            <line x1="20" y1="46" x2="20" y2="58" stroke="#e08aa3" stroke-width="1.5" />
+            <path d="M20 42 L16 47 L24 47 Z" fill="#ffb3cb" />
+            <ellipse cx="20" cy="22" rx="16" ry="20" fill="#ffb3cb" />
+            <ellipse cx="14" cy="13" rx="5" ry="7" fill="rgba(255,255,255,0.55)" />
+          </svg>
+        </div>
+
+        <div class="decor decor--candle1">
+          <svg viewBox="0 0 40 100">
+            <line x1="20" y1="30" x2="20" y2="16" stroke="#c98a99" stroke-width="2" stroke-linecap="round" />
+            <path class="decor__flame" d="M20 2 C 13 11, 13 20, 20 20 C 27 20, 27 11, 20 2 Z" fill="url(#flameGrad1)" />
+            <rect x="10" y="30" width="20" height="58" rx="4" fill="#ffd6e3" />
+            <rect x="10" y="46" width="20" height="7" fill="#ffb3cb" />
+            <rect x="10" y="66" width="20" height="7" fill="#ffb3cb" />
+            <defs>
+              <radialGradient id="flameGrad1" cx="50%" cy="70%" r="70%">
+                <stop offset="0%" stop-color="#fff3b0" />
+                <stop offset="55%" stop-color="#ffb648" />
+                <stop offset="100%" stop-color="#ff8a3d" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div class="decor decor--candle2">
+          <svg viewBox="0 0 40 100">
+            <line x1="20" y1="30" x2="20" y2="16" stroke="#c98a99" stroke-width="2" stroke-linecap="round" />
+            <path class="decor__flame" d="M20 2 C 13 11, 13 20, 20 20 C 27 20, 27 11, 20 2 Z" fill="url(#flameGrad2)" />
+            <rect x="10" y="30" width="20" height="58" rx="4" fill="#fff" />
+            <rect x="10" y="46" width="20" height="7" fill="#ffd6e3" />
+            <rect x="10" y="66" width="20" height="7" fill="#ffd6e3" />
+            <defs>
+              <radialGradient id="flameGrad2" cx="50%" cy="70%" r="70%">
+                <stop offset="0%" stop-color="#fff3b0" />
+                <stop offset="55%" stop-color="#ffb648" />
+                <stop offset="100%" stop-color="#ff8a3d" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div class="decor decor--balloon2">
+          <svg viewBox="0 0 40 60">
+            <line x1="20" y1="46" x2="20" y2="58" stroke="#e08aa3" stroke-width="1.5" />
+            <path d="M20 42 L16 47 L24 47 Z" fill="#ff8fb3" />
+            <ellipse cx="20" cy="22" rx="16" ry="20" fill="#ff8fb3" />
+            <ellipse cx="14" cy="13" rx="5" ry="7" fill="rgba(255,255,255,0.55)" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/collage.js?v=2"></script>
+</body>
+</html>
