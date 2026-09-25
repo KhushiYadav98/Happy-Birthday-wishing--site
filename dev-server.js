@@ -15,6 +15,7 @@ const TYPES = {
   ".webp": "image/webp",
   ".svg": "image/svg+xml",
   ".json": "application/json",
+  ".mp3": "audio/mpeg",
 };
 
 http

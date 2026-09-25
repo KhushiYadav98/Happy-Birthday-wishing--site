@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="Images/creatorbackground.png" />
-  <link rel="stylesheet" href="css/style.css?v=8" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
 </head>
 <body>
   <main class="screen open" id="open">
@@ -21,6 +21,20 @@
     </section>
   </main>
 
-  <script src="js/open.js?v=1"></script>
+  <button class="music-toggle" id="musicBtn" type="button" aria-label="Mute music" aria-pressed="true" hidden>
+    <svg class="music-toggle__on" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 18V5l11-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="17" cy="16" r="3" />
+    </svg>
+    <svg class="music-toggle__off" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 18V5l11-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="17" cy="16" r="3" />
+      <line x1="3" y1="3" x2="21" y2="21" />
+    </svg>
+  </button>
+
+  <script src="js/open.js?v=2"></script>
 </body>
 </html>
