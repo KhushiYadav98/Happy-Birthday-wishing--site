@@ -21,7 +21,11 @@
 
   function playMusic() {
     music.play().catch(() => {
-      /* blocked by browser – the music button lets them start it */
+      // blocked by the browser – show it as off so one tap on the button starts it
+      musicOn = false;
+      musicBtn.classList.add("is-muted");
+      musicBtn.setAttribute("aria-pressed", "false");
+      musicBtn.setAttribute("aria-label", "Play music");
     });
   }
 

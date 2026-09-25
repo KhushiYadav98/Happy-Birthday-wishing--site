@@ -641,43 +641,39 @@ body {
 }
 
 .photo__frame {
+  --sticker-w: min(80vw, 340px);
   position: relative;
-  width: 68%;
-  max-width: 280px;
-  margin-bottom: 150px;
+  display: flex;
+  justify-content: center;
+  /* room for the part of the sticker that hangs below the photo */
+  margin-bottom: calc(var(--sticker-w) * 0.5);
   opacity: 0;
   animation: slideUp 0.6s ease-out 0.5s forwards;
 }
 
+/* whole photo is shown at its own shape – nothing gets cropped */
 .photo__picture {
   display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  width: auto;
+  height: auto;
+  max-width: min(78vw, 360px);
+  max-height: 46vh;
+  max-height: 46dvh;
+  min-width: 120px;
   border-radius: 20px;
   border: 5px solid #fff;
+  background: linear-gradient(160deg, #fff3f7, #fddbe6); /* shows behind transparent photos */
   box-shadow: 0 10px 24px rgba(214, 70, 120, 0.3);
 }
 
-.photo__cap {
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  width: 42%;
-  height: auto;
-  transform: translateX(-50%) rotate(-8deg);
-  filter: drop-shadow(0 8px 14px rgba(214, 70, 120, 0.3));
-  pointer-events: none;
-  z-index: 2;
-}
-
+/* balloons + banner sit over the bottom of the photo, whatever its height */
 .photo__sticker {
   position: absolute;
   left: 50%;
-  top: 66%;
-  width: 92%;
+  top: 100%;
+  width: var(--sticker-w);
   height: auto;
-  transform: translateX(-50%);
+  transform: translate(-50%, -46%);
   pointer-events: none;
   filter: drop-shadow(0 6px 12px rgba(214, 70, 120, 0.25));
   z-index: 2;

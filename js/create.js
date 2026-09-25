@@ -31,23 +31,56 @@ import {
   }
 
   // ---------- Photo uploads ----------
-  function resizeImage(file, maxSize) {
+  // keep transparent photos from eating the 1MB card budget
+  const MAX_TRANSPARENT_CHARS = { main: 330000, memory: 150000 };
+
+  function drawScaled(img, maxSize) {
+    const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return { canvas, ctx };
+  }
+
+  function hasTransparency(ctx, canvas) {
+    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    for (let i = 3; i < data.length; i += 16) {
+      if (data[i] < 250) return true;
+    }
+    return false;
+  }
+
+  // Transparent photos (e.g. cut-outs) keep their transparency: WebP where the
+  // browser can make it (small), otherwise PNG, shrinking until it fits.
+  function encodeTransparent(img, maxSize, maxChars) {
+    let size = maxSize;
+    let dataUrl;
+    while (size >= 150) {
+      const { canvas } = drawScaled(img, size);
+      dataUrl = canvas.toDataURL("image/webp", 0.8);
+      if (!dataUrl.startsWith("data:image/webp")) dataUrl = canvas.toDataURL("image/png");
+      if (dataUrl.length <= maxChars) return dataUrl;
+      size = Math.round(size * 0.8);
+    }
+    return dataUrl;
+  }
+
+  function resizeImage(file, maxSize, maxTransparentChars) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file);
       const img = new Image();
       img.onload = () => {
-        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        const ctx = canvas.getContext("2d");
-        // JPEG has no alpha channel — fill white first so transparent
-        // source images (e.g. PNG stickers) don't turn black on export.
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const { canvas, ctx } = drawScaled(img, maxSize);
+        let dataUrl;
+        if (hasTransparency(ctx, canvas)) {
+          dataUrl = encodeTransparent(img, maxSize, maxTransparentChars);
+        } else {
+          dataUrl = canvas.toDataURL("image/jpeg", PHOTO_QUALITY);
+        }
         URL.revokeObjectURL(url);
-        resolve(canvas.toDataURL("image/jpeg", PHOTO_QUALITY));
+        resolve(dataUrl);
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
@@ -68,8 +101,12 @@ import {
 
       try {
         const slot = input.dataset.slot;
-        const maxSize = slot === "main" ? MAX_PHOTO_SIZE : MAX_MEMORY_SIZE;
-        const dataUrl = await resizeImage(file, maxSize);
+        const isMain = slot === "main";
+        const dataUrl = await resizeImage(
+          file,
+          isMain ? MAX_PHOTO_SIZE : MAX_MEMORY_SIZE,
+          isMain ? MAX_TRANSPARENT_CHARS.main : MAX_TRANSPARENT_CHARS.memory
+        );
         photos[slot] = dataUrl;
         preview.src = dataUrl;
         box.classList.add("has-image");
